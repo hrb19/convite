@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parabéns, você foi convidada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 5px;
+        }
+
+        #convite {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border: 1px solid #007bff;
+            border-radius: 6px;
+        }
+
+        #resposta {
+            margin-top: 15px;
+            font-weight: bold;
+            color: green;
+        }
+
+        #mensagem {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 id="titulo">SEU CONVITE CHEGOU</h2>
+        <p id="instrucaoSenha">Insira a senha para acessar o convite:</p>
+        <p id="instrucaoSenha2">Dica, a senha é a forma que te chamo. 🩷</p>
+        <form id="formSenha">
+            <input type="password" id="senhaInput" required />
+            <button type="submit">Entrar</button>
+        </form>
+        <p id="mensagem"></p>
+
+        <div id="convite">
+            <h3>🎉 Parabéns, Danielle. Você foi convidada para o meu, o seu, o nosso casamento! 🎉</h3>
+            <p>Traga a sua família e venha vestida de NOIVA</p>
+            <p><strong>Data:</strong> O quanto antes, pelo amor de Deus! 🥹</p>
+            <p><strong>Hora:</strong> O mais rápido possível! </p>
+
+            <div>
+                <p>Você vai poder comparecer?</p>
+                <button id="btnSim">Com certeza, SIM!</button>
+                <button id="btnNao">Não? Tem certeza?</button>
+            </div>
+            <p id="resposta"></p>
+        </div>
+    </div>
+
+    <script>
+        var senhaCorreta = "Paixão";
+        var tentativas = 0;
+
+        var apelidos = [
+            "amor",
+            "vida",
+            "princesa",
+            "gostosa",
+            "delicia",
+            "maravilhosa",
+            "dani"
+        ];
+
+        function removerAcentos(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function estaNosApelidos(senha) {
+            return apelidos.includes(senha);
+        }
+
+        document.getElementById("formSenha").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            var senhaDigitadaRaw = document.getElementById("senhaInput").value;
+            var senhaDigitada = removerAcentos(senhaDigitadaRaw.toLowerCase().trim());
+
+            if (senhaDigitada.length < 4) {
+                document.getElementById("mensagem").innerText = "A senha deve ter pelo menos 4 letras.";
+                document.getElementById("senhaInput").value = "";
+                document.getElementById("senhaInput").focus();
+                return;
+            }
+
+            if (senhaDigitada === removerAcentos(senhaCorreta.toLowerCase())) {
+                document.getElementById("mensagem").innerText = "";
+                document.getElementById("formSenha").style.display = "none";
+                document.getElementById("instrucaoSenha").style.display = "none";
+                document.getElementById("instrucaoSenha2").style.display = "none";
+                document.getElementById("titulo").style.display = "none";
+                document.getElementById("convite").style.display = "block";
+            } else if (estaNosApelidos(senhaDigitada)) {
+                document.getElementById("mensagem").innerText = "Hmm, passou perto, mas não é essa forma que eu te chamo.";
+
+                tentativas++; // para controlar tentativas se quiser limitar
+
+                document.getElementById("senhaInput").value = "";
+                document.getElementById("senhaInput").focus();
+            } else {
+                tentativas++;
+
+                document.getElementById("senhaInput").value = "";
+                document.getElementById("senhaInput").focus();
+
+                if (tentativas === 1) {
+                    document.getElementById("mensagem").innerText = "Senha incorreta. Tente novamente.";
+                } else if (tentativas === 2) {
+                    document.getElementById("mensagem").innerText = "Senha incorreta. Última tentativa.";
+                } else {
+                    document.getElementById("mensagem").innerText = "Dica: A senha é a forma que eu te chamo.";
+                }
+            }
+        });
+
+        document.getElementById("btnSim").addEventListener("click", function () {
+            document.getElementById("resposta").innerText = "Que ótimo! Estou ansioso para me casar com você! Eu te amo. 😊";
+            esconderBotoesConfirmacao();
+        });
+
+        document.getElementById("btnNao").addEventListener("click", function () {
+            document.getElementById("resposta").innerText = "Desculpa, você não tem escolha, vai casar comigo sim! Eu te amo. 😊";
+            esconderBotoesConfirmacao();
+        });
+
+        function esconderBotoesConfirmacao() {
+            document.getElementById("btnSim").style.display = "none";
+            document.getElementById("btnNao").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
